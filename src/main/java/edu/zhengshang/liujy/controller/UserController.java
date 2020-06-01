@@ -110,7 +110,7 @@ public class UserController {
 		//session.setAttribute("wangdians", wangdians);
 		return modelAndView;
 	}
-	//修改个人信息
+	//修改用户个人信息
 	@RequestMapping("updateuser")
 	public String updateuser(User user1,HttpServletRequest request,HttpSession session){
 		System.out.println("=======user1======="+user1);
@@ -332,7 +332,7 @@ public class UserController {
 		}
 		return flag;
 	}
-	
+
 	
 	//订单支付
 	@RequestMapping("zhifu")
