@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.zhengshang.liujy.dao.TruckMapper">
+  <resultMap id="BaseResultMap" type="edu.zhengshang.liujy.bean.Truck">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="truck_number" jdbcType="INTEGER" property="truckNumber" />
+    <result column="stauts" jdbcType="INTEGER" property="stauts" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, truck_number, stauts, is_del
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from truck
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!--查询汽车状态-->
+  <select id="selectByPrimary" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from truck
+    where stauts = #{stauts,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from truck
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="edu.zhengshang.liujy.bean.Truck">
+    insert into truck (id, truck_number, stauts, 
+      is_del)
+    values (#{id,jdbcType=INTEGER}, #{truckNumber,jdbcType=INTEGER}, #{stauts,jdbcType=INTEGER}, 
+      #{isDel,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="edu.zhengshang.liujy.bean.Truck">
+    insert into truck
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="truckNumber != null">
+        truck_number,
+      </if>
+      <if test="stauts != null">
+        stauts,
+      </if>
+      <if test="isDel != null">
+        is_del,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="truckNumber != null">
+        #{truckNumber,jdbcType=INTEGER},
+      </if>
+      <if test="stauts != null">
+        #{stauts,jdbcType=INTEGER},
+      </if>
+      <if test="isDel != null">
+        #{isDel,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="edu.zhengshang.liujy.bean.Truck">
+    update truck
+    <set>
+      <if test="truckNumber != null">
+        truck_number = #{truckNumber,jdbcType=INTEGER},
+      </if>
+      <if test="stauts != null">
+        stauts = #{stauts,jdbcType=INTEGER},
+      </if>
+      <if test="isDel != null">
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="edu.zhengshang.liujy.bean.Truck">
+    update truck
+    set truck_number = #{truckNumber,jdbcType=INTEGER},
+      stauts = #{stauts,jdbcType=INTEGER},
+      is_del = #{isDel,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--mybatis全局配置-->
+
+    <settings>
+        <!--驼峰命名转换-->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!--关闭自动加载-->
+        <setting name="aggressiveLazyLoading" value="false"/>
+    </settings>
+    <!--为实体类定义别名-->
+    <typeAliases>
+        <package name="edu.zhengshang.liujy.bean"/>
+    </typeAliases>
+</configuration>

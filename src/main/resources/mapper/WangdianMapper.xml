@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.zhengshang.liujy.dao.WangdianMapper">
+  <resultMap id="BaseResultMap" type="edu.zhengshang.liujy.bean.Wangdian">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="wd_name" jdbcType="VARCHAR" property="wdName" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="di_zhi" jdbcType="VARCHAR" property="diZhi" />
+    <result column="fan_wei" jdbcType="VARCHAR" property="fanWei" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, wd_name, phone, di_zhi, fan_wei, is_del
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from wangdian
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByPrimary" resultType="Wangdian" >
+    select * from wangdian
+    where is_del=0
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from wangdian
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="edu.zhengshang.liujy.bean.Wangdian">
+    insert into wangdian (id, wd_name, phone, 
+      di_zhi, fan_wei, is_del
+      )
+    values (#{id,jdbcType=INTEGER}, #{wdName,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
+      #{diZhi,jdbcType=VARCHAR}, #{fanWei,jdbcType=VARCHAR}, #{isDel,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="edu.zhengshang.liujy.bean.Wangdian">
+    insert into wangdian
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="wdName != null">
+        wd_name,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="diZhi != null">
+        di_zhi,
+      </if>
+      <if test="fanWei != null">
+        fan_wei,
+      </if>
+      <if test="isDel != null">
+        is_del,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="wdName != null">
+        #{wdName,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="diZhi != null">
+        #{diZhi,jdbcType=VARCHAR},
+      </if>
+      <if test="fanWei != null">
+        #{fanWei,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null">
+        #{isDel,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="edu.zhengshang.liujy.bean.Wangdian">
+    update wangdian
+    <set>
+      <if test="wdName != null">
+        wd_name = #{wdName,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="diZhi != null">
+        di_zhi = #{diZhi,jdbcType=VARCHAR},
+      </if>
+      <if test="fanWei != null">
+        fan_wei = #{fanWei,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null">
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="edu.zhengshang.liujy.bean.Wangdian">
+    update wangdian
+    set wd_name = #{wdName,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      di_zhi = #{diZhi,jdbcType=VARCHAR},
+      fan_wei = #{fanWei,jdbcType=VARCHAR},
+      is_del = #{isDel,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

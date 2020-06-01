@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.zhengshang.liujy.dao.UserMapper">
+  <resultMap id="BaseResultMap" type="edu.zhengshang.liujy.bean.User">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_code" jdbcType="VARCHAR" property="userCode" />
+    <result column="pass_word" jdbcType="VARCHAR" property="passWord" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="wallet" jdbcType="DOUBLE" property="wallet" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_code, pass_word, real_name, wallet, is_del, phone
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!--登陆  -->
+  <select id="selectByPrimary"  resultType="User" >
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where user_code= #{userCode,jdbcType=VARCHAR}
+    and pass_word= #{passWord,jdbcType=VARCHAR}
+    and is_del=0
+  </select>
+
+  <select id="selectByPrimary1"  resultType="User" >
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where real_name= #{realName,jdbcType=VARCHAR}
+    and is_del=0;
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="edu.zhengshang.liujy.bean.User">
+    insert into user (id, user_code, pass_word, 
+      real_name, wallet, is_del, 
+      phone)
+    values (#{id,jdbcType=INTEGER}, #{userCode,jdbcType=VARCHAR}, #{passWord,jdbcType=VARCHAR}, 
+      #{realName,jdbcType=VARCHAR}, #{wallet,jdbcType=DOUBLE}, #{isDel,jdbcType=INTEGER}, 
+      #{phone,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="edu.zhengshang.liujy.bean.User">
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userCode != null">
+        user_code,
+      </if>
+      <if test="passWord != null">
+        pass_word,
+      </if>
+      <if test="realName != null">
+        real_name,
+      </if>
+      <if test="wallet != null">
+        wallet,
+      </if>
+      <if test="isDel != null">
+        is_del,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userCode != null">
+        #{userCode,jdbcType=VARCHAR},
+      </if>
+      <if test="passWord != null">
+        #{passWord,jdbcType=VARCHAR},
+      </if>
+      <if test="realName != null">
+        #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="wallet != null">
+        #{wallet,jdbcType=DOUBLE},
+      </if>
+      <if test="isDel != null">
+        #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="edu.zhengshang.liujy.bean.User">
+    update user
+    <set>
+      <if test="userCode != null">
+        user_code = #{userCode,jdbcType=VARCHAR},
+      </if>
+      <if test="passWord != null">
+        pass_word = #{passWord,jdbcType=VARCHAR},
+      </if>
+      <if test="realName != null">
+        real_name = #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="wallet != null">
+        wallet = #{wallet,jdbcType=DOUBLE},
+      </if>
+      <if test="isDel != null">
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="edu.zhengshang.liujy.bean.User">
+    update user
+    set user_code = #{userCode,jdbcType=VARCHAR},
+      pass_word = #{passWord,jdbcType=VARCHAR},
+      real_name = #{realName,jdbcType=VARCHAR},
+      wallet = #{wallet,jdbcType=DOUBLE},
+      is_del = #{isDel,jdbcType=INTEGER},
+      phone = #{phone,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

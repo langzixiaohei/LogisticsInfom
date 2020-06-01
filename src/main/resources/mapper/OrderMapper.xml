@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.zhengshang.liujy.dao.OrderMapper">
+  <resultMap id="BaseResultMap" type="edu.zhengshang.liujy.bean.Order">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="link_id" jdbcType="INTEGER" property="linkId" />
+    <result column="loginfo_id" jdbcType="INTEGER" property="loginfoId" />
+    <result column="goods_id" jdbcType="INTEGER" property="goodsId" />
+    <result column="driver_id" jdbcType="INTEGER" property="driverId" />
+    <result column="truck_id" jdbcType="INTEGER" property="truckId" />
+    <result column="order_number" jdbcType="INTEGER" property="orderNumber" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <result column="user_address" jdbcType="VARCHAR" property="userAddress" />
+    <result column="link_address" jdbcType="VARCHAR" property="linkAddress" />
+    <result column="user_phone" jdbcType="VARCHAR" property="userPhone" />
+    <result column="link_phone" jdbcType="VARCHAR" property="linkPhone" />
+    <result column="stauts" jdbcType="VARCHAR" property="stauts" />
+    <result column="unusual" jdbcType="INTEGER" property="unusual" />
+    <result column="service_type" jdbcType="VARCHAR" property="serviceType" />
+    <result column="pay_type" jdbcType="INTEGER" property="payType" />
+    <result column="money" jdbcType="DOUBLE" property="money" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+    <result column="orgenzong" jdbcType="VARCHAR" property="orgenzong" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, link_id, loginfo_id, goods_id, driver_id, truck_id, order_number, create_time, 
+    user_address, link_address, user_phone, link_phone, stauts, unusual, service_type, 
+    pay_type, money, is_del, orgenzong
+  </sql>
+
+  <!--查询单个订单  -->
+  <select id="selectByPrimaryKey" resultType="Order" >
+   SELECT lor.*,lus.real_name AS 'jiname',lus.phone AS 'jiphone',lli.real_name AS 'shouname',
+	lli.phone AS 'shouphone',logo.good_name AS 'goodname'
+	from  `order` lor,user lus,linkman lli,goods logo
+	WHERE lor.user_id=lus.id
+	and lor.goods_id=logo.id
+	AND lor.link_id=lli.id
+	AND lor.is_del=0
+	AND lor.id=#{id,jdbcType=INTEGER}
+
+  </select>
+
+  <select id="getbygoodsid" resultType="Order" >
+       SELECT * from `order` where goods_id=#{goodsId,jdbcType=INTEGER}
+  </select>
+
+  <!--查询个人订单  -->
+  <select id="selectByPrimary1"  resultType="Order">
+    SELECT lor.*,lus.real_name AS 'jiname',lus.phone AS 'jiphone',lli.real_name AS 'shouname',lli.phone AS 'shouphone',logo.good_name AS 'goodname' from  `order` lor,user lus,linkman lli,goods logo
+    WHERE lor.user_id=lus.id and lor.goods_id=logo.id AND lor.link_id=lli.id AND lor.is_del=0
+    and  lor.user_id=#{userId,jdbcType=INTEGER}
+    <if test="orderNumber != null" >
+      and order_number=#{orderNumber,jdbcType=INTEGER}
+    </if>
+  </select>
+
+  <!--后台查询所有未分配的订单  -->
+  <select id="selectByPrimarywfp"  resultType="Order">
+   SELECT lor.*,lus.real_name AS 'jiname',lus.phone AS 'jiphone',lli.real_name AS 'shouname',lli.phone AS 'shouphone',logo.good_name AS 'goodname' from  `order` lor,user lus,linkman lli,goods logo
+	 WHERE lor.user_id=lus.id and lor.goods_id=logo.id AND lor.link_id=lli.id AND lor.is_del=0
+  </select>
+
+  <!--后台查询所有已分配的订单  -->
+  <select id="selectByPrimary"  resultType="Order">
+    SELECT lor.*,lus.real_name AS 'jiname',lus.phone AS 'jiphone',lli.real_name AS 'shouname',
+    lli.phone AS 'shouphone',logo.good_name AS 'goodname' ,lod.driver_name AS 'drivername',lod.id,lot.truck_number AS 'trucknub',lot.id
+    from  `order` lor,user lus,linkman lli,goods logo,driver lod,truck lot
+    WHERE lor.user_id=lus.id
+    and lor.goods_id=logo.id
+    AND lor.link_id=lli.id
+    AND lor.driver_id=lod.id
+    AND lor.truck_id=lot.id
+    AND lor.is_del=0
+    <if test="orderNumber != null" >
+      AND  order_number = #{orderNumber,jdbcType=INTEGER}
+    </if>
+    <if test="createTime != null" >
+      AND  create_time = #{createTime,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+  <!--查询所有异常订单  -->
+  <select id="selectByPrimaryyc"  resultType="Order">
+		SELECT lor.*,lus.real_name AS 'jiname',lus.phone AS 'jiphone',lli.real_name AS 'shouname',
+		lli.phone AS 'shouphone',logo.good_name AS 'goodname'
+		from  `order` lor,user lus,linkman lli,goods logo
+		WHERE lor.user_id=lus.id
+        AND lor.goods_id=logo.id
+		AND lor.link_id=lli.id
+		AND lor.unusual=1
+		AND lor.is_del=0
+  </select>
+
+  <!--查询所有已经收货的订单  -->
+  <select id="all"  resultType="Order">
+		SELECT * from  `order`
+		WHERE is_del=0 and stauts='已收货'
+
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from `order`
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="edu.zhengshang.liujy.bean.Order">
+    insert into `order` (id, user_id, link_id,
+      loginfo_id, goods_id, driver_id, 
+      truck_id, order_number, create_time, 
+      user_address, link_address, user_phone, 
+      link_phone, stauts, unusual, 
+      service_type, pay_type, money, 
+      is_del, orgenzong)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{linkId,jdbcType=INTEGER}, 
+      #{loginfoId,jdbcType=INTEGER}, #{goodsId,jdbcType=INTEGER}, #{driverId,jdbcType=INTEGER}, 
+      #{truckId,jdbcType=INTEGER}, #{orderNumber,jdbcType=INTEGER}, #{createTime,jdbcType=VARCHAR}, 
+      #{userAddress,jdbcType=VARCHAR}, #{linkAddress,jdbcType=VARCHAR}, #{userPhone,jdbcType=VARCHAR}, 
+      #{linkPhone,jdbcType=VARCHAR}, #{stauts,jdbcType=VARCHAR}, #{unusual,jdbcType=INTEGER}, 
+      #{serviceType,jdbcType=VARCHAR}, #{payType,jdbcType=INTEGER}, #{money,jdbcType=DOUBLE}, 
+      #{isDel,jdbcType=INTEGER}, #{orgenzong,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="edu.zhengshang.liujy.bean.Order">
+    insert into `order`
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="linkId != null">
+        link_id,
+      </if>
+      <if test="loginfoId != null">
+        loginfo_id,
+      </if>
+      <if test="goodsId != null">
+        goods_id,
+      </if>
+      <if test="driverId != null">
+        driver_id,
+      </if>
+      <if test="truckId != null">
+        truck_id,
+      </if>
+      <if test="orderNumber != null">
+        order_number,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="userAddress != null">
+        user_address,
+      </if>
+      <if test="linkAddress != null">
+        link_address,
+      </if>
+      <if test="userPhone != null">
+        user_phone,
+      </if>
+      <if test="linkPhone != null">
+        link_phone,
+      </if>
+      <if test="stauts != null">
+        stauts,
+      </if>
+      <if test="unusual != null">
+        unusual,
+      </if>
+      <if test="serviceType != null">
+        service_type,
+      </if>
+      <if test="payType != null">
+        pay_type,
+      </if>
+      <if test="money != null">
+        money,
+      </if>
+      <if test="isDel != null">
+        is_del,
+      </if>
+      <if test="orgenzong != null">
+        orgenzong,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="linkId != null">
+        #{linkId,jdbcType=INTEGER},
+      </if>
+      <if test="loginfoId != null">
+        #{loginfoId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsId != null">
+        #{goodsId,jdbcType=INTEGER},
+      </if>
+      <if test="driverId != null">
+        #{driverId,jdbcType=INTEGER},
+      </if>
+      <if test="truckId != null">
+        #{truckId,jdbcType=INTEGER},
+      </if>
+      <if test="orderNumber != null">
+        #{orderNumber,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="userAddress != null">
+        #{userAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="linkAddress != null">
+        #{linkAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhone != null">
+        #{userPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="linkPhone != null">
+        #{linkPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="stauts != null">
+        #{stauts,jdbcType=VARCHAR},
+      </if>
+      <if test="unusual != null">
+        #{unusual,jdbcType=INTEGER},
+      </if>
+      <if test="serviceType != null">
+        #{serviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="payType != null">
+        #{payType,jdbcType=INTEGER},
+      </if>
+      <if test="money != null">
+        #{money,jdbcType=DOUBLE},
+      </if>
+      <if test="isDel != null">
+        #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="orgenzong != null">
+        #{orgenzong,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="edu.zhengshang.liujy.bean.Order">
+    update `order`
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="linkId != null">
+        link_id = #{linkId,jdbcType=INTEGER},
+      </if>
+      <if test="loginfoId != null">
+        loginfo_id = #{loginfoId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsId != null">
+        goods_id = #{goodsId,jdbcType=INTEGER},
+      </if>
+      <if test="driverId != null">
+        driver_id = #{driverId,jdbcType=INTEGER},
+      </if>
+      <if test="truckId != null">
+        truck_id = #{truckId,jdbcType=INTEGER},
+      </if>
+      <if test="orderNumber != null">
+        order_number = #{orderNumber,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="userAddress != null">
+        user_address = #{userAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="linkAddress != null">
+        link_address = #{linkAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhone != null">
+        user_phone = #{userPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="linkPhone != null">
+        link_phone = #{linkPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="stauts != null">
+        stauts = #{stauts,jdbcType=VARCHAR},
+      </if>
+      <if test="unusual != null">
+        unusual = #{unusual,jdbcType=INTEGER},
+      </if>
+      <if test="serviceType != null">
+        service_type = #{serviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="payType != null">
+        pay_type = #{payType,jdbcType=INTEGER},
+      </if>
+      <if test="money != null">
+        money = #{money,jdbcType=DOUBLE},
+      </if>
+      <if test="isDel != null">
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="orgenzong != null">
+        orgenzong = #{orgenzong,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="edu.zhengshang.liujy.bean.Order">
+    update `order`
+    set user_id = #{userId,jdbcType=INTEGER},
+      link_id = #{linkId,jdbcType=INTEGER},
+      loginfo_id = #{loginfoId,jdbcType=INTEGER},
+      goods_id = #{goodsId,jdbcType=INTEGER},
+      driver_id = #{driverId,jdbcType=INTEGER},
+      truck_id = #{truckId,jdbcType=INTEGER},
+      order_number = #{orderNumber,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=VARCHAR},
+      user_address = #{userAddress,jdbcType=VARCHAR},
+      link_address = #{linkAddress,jdbcType=VARCHAR},
+      user_phone = #{userPhone,jdbcType=VARCHAR},
+      link_phone = #{linkPhone,jdbcType=VARCHAR},
+      stauts = #{stauts,jdbcType=VARCHAR},
+      unusual = #{unusual,jdbcType=INTEGER},
+      service_type = #{serviceType,jdbcType=VARCHAR},
+      pay_type = #{payType,jdbcType=INTEGER},
+      money = #{money,jdbcType=DOUBLE},
+      is_del = #{isDel,jdbcType=INTEGER},
+      orgenzong = #{orgenzong,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

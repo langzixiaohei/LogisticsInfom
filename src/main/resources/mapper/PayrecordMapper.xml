@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.zhengshang.liujy.dao.PayrecordMapper">
+  <resultMap id="BaseResultMap" type="edu.zhengshang.liujy.bean.Payrecord">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="good_name" jdbcType="VARCHAR" property="goodName" />
+    <result column="pay_time" jdbcType="VARCHAR" property="payTime" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_id, user_name, good_name, pay_time, is_del
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from payrecord
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- 查询所有支付记录 -->
+  <select id="selectByPrimary" resultType="Payrecord" >
+    select lop.*,lor.order_number,lor.id AS 'orderNumber' from `order` lor,payrecord lop where  lop.order_id=lor.id and lop.is_del=0
+
+    <if test="userName != null and userName != ''" >
+      and   lop.user_name= #{userName,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from payrecord
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="edu.zhengshang.liujy.bean.Payrecord">
+    insert into payrecord (id, order_id, user_name, 
+      good_name, pay_time, is_del
+      )
+    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, 
+      #{goodName,jdbcType=VARCHAR}, #{payTime,jdbcType=VARCHAR}, #{isDel,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="edu.zhengshang.liujy.bean.Payrecord">
+    insert into payrecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="goodName != null">
+        good_name,
+      </if>
+      <if test="payTime != null">
+        pay_time,
+      </if>
+      <if test="isDel != null">
+        is_del,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null">
+        #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="goodName != null">
+        #{goodName,jdbcType=VARCHAR},
+      </if>
+      <if test="payTime != null">
+        #{payTime,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null">
+        #{isDel,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="edu.zhengshang.liujy.bean.Payrecord">
+    update payrecord
+    <set>
+      <if test="orderId != null">
+        order_id = #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="goodName != null">
+        good_name = #{goodName,jdbcType=VARCHAR},
+      </if>
+      <if test="payTime != null">
+        pay_time = #{payTime,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null">
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="edu.zhengshang.liujy.bean.Payrecord">
+    update payrecord
+    set order_id = #{orderId,jdbcType=INTEGER},
+      user_name = #{userName,jdbcType=VARCHAR},
+      good_name = #{goodName,jdbcType=VARCHAR},
+      pay_time = #{payTime,jdbcType=VARCHAR},
+      is_del = #{isDel,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

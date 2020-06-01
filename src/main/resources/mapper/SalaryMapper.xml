@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.zhengshang.liujy.dao.SalaryMapper">
+  <resultMap id="BaseResultMap" type="edu.zhengshang.liujy.bean.Salary">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="de_id" jdbcType="INTEGER" property="deId" />
+    <result column="count" jdbcType="INTEGER" property="count" />
+    <result column="salary" jdbcType="DOUBLE" property="salary" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, de_id, count, salary, is_del
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from salary
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByPrimaryby" resultType="Salary" >
+		SELECT * from salary where de_id=#{deId}
+  </select>
+
+
+  <!--查询员工（司机）工资-->
+  <select id="getallgz" resultType="Salary" >
+		SELECT los.*,los.de_id,lod.id AS 'derverid',lod.age AS 'derverage',lod.price AS 'derverprice',lod.driver_name AS 'dervername',lod.phone AS 'derverphone'
+		FROM salary los,driver lod
+		WHERE los.de_id=lod.id
+		AND los.is_del=0
+  </select>
+
+  <select id="all" resultType="Salary" >
+		SELECT * from salary where is_del=0
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from salary
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="edu.zhengshang.liujy.bean.Salary">
+    insert into salary (id, de_id, count, 
+      salary, is_del)
+    values (#{id,jdbcType=INTEGER}, #{deId,jdbcType=INTEGER}, #{count,jdbcType=INTEGER}, 
+      #{salary,jdbcType=DOUBLE}, #{isDel,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="edu.zhengshang.liujy.bean.Salary">
+    insert into salary
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="deId != null">
+        de_id,
+      </if>
+      <if test="count != null">
+        count,
+      </if>
+      <if test="salary != null">
+        salary,
+      </if>
+      <if test="isDel != null">
+        is_del,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="deId != null">
+        #{deId,jdbcType=INTEGER},
+      </if>
+      <if test="count != null">
+        #{count,jdbcType=INTEGER},
+      </if>
+      <if test="salary != null">
+        #{salary,jdbcType=DOUBLE},
+      </if>
+      <if test="isDel != null">
+        #{isDel,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="edu.zhengshang.liujy.bean.Salary">
+    update salary
+    <set>
+      <if test="deId != null">
+        de_id = #{deId,jdbcType=INTEGER},
+      </if>
+      <if test="count != null">
+        count = #{count,jdbcType=INTEGER},
+      </if>
+      <if test="salary != null">
+        salary = #{salary,jdbcType=DOUBLE},
+      </if>
+      <if test="isDel != null">
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="edu.zhengshang.liujy.bean.Salary">
+    update salary
+    set de_id = #{deId,jdbcType=INTEGER},
+      count = #{count,jdbcType=INTEGER},
+      salary = #{salary,jdbcType=DOUBLE},
+      is_del = #{isDel,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
